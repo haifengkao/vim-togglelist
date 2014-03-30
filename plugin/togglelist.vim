@@ -1,83 +1,30 @@
-" toggle list plugin
+" vim: fdm=marker:et:ts=4:sw=2:sts=2
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ToggleList
 "
-" Donald Ephraim Curtis (2011)
+" Original Creator - Donald Ephraim Curtis (2011)
+" Adapted by       - Kartik Shenoy (2014)
 "
-" boom
+" A plugin to toggle the Quickfix and LocationList
 "
-" This plugin allows you to use \l and \q to toggle the location list and
-" quickfix list (respectively).
-"
-"
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-if exists("g:loaded_toggle_list")
+if exists("g:loaded_togglelist")
   finish
 endif
+let g:loaded_togglelist=1
 
-function! s:GetBufferList() 
-  redir =>buflist 
-  silent! ls 
-  redir END 
-  return buflist 
-endfunction
+if !exists('g:ToggleList'           ) | let g:ToggleList            = {}       | endif
+if !exists('g:ToggleList.quiet'     ) | let g:ToggleList.quiet      = 1        | endif
+if !exists('g:ToggleList.cmd'       ) | let g:ToggleList.cmd        = {}       | endif
+if !exists('g:ToggleList.cmd.copen' ) | let g:ToggleList.cmd.copen  = "copen"  | endif
+if !exists('g:ToggleList.cmd.cclose') | let g:ToggleList.cmd.cclose = "cclose" | endif
+if !exists('g:ToggleList.cmd.lopen' ) | let g:ToggleList.cmd.lopen  = "lopen"  | endif
+if !exists('g:ToggleList.cmd.lclose') | let g:ToggleList.cmd.lclose = "lclose" | endif
 
-function! ToggleLocationList()
-  let curbufnr = winbufnr(0)
-  for bufnum in map(filter(split(s:GetBufferList(), '\n'), 'v:val =~ "Location List"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-    if curbufnr == bufnum
-      lclose
-      return
-    endif
-  endfor
+command! ToggleQF call togglelist#ToggleQuickfix()
+command! ToggleLL call togglelist#ToggleLocationList()
 
-  let winnr = winnr()
-  let prevwinnr = winnr("#")
-
-  let nextbufnr = winbufnr(winnr + 1)
-  try
-    lopen
-  catch /E776/
-      echohl ErrorMsg 
-      echo "Location List is Empty."
-      echohl None
-      return
-  endtry
-  if winbufnr(0) == nextbufnr
-    lclose
-    if prevwinnr > winnr
-      let prevwinnr-=1
-    endif
-  else
-    if prevwinnr > winnr
-      let prevwinnr+=1
-    endif
-  endif
-  " restore previous window
-  exec prevwinnr."wincmd w"
-  exec winnr."wincmd w"
-endfunction
-
-function! ToggleQuickfixList()
-  for bufnum in map(filter(split(s:GetBufferList(), '\n'), 'v:val =~ "Quickfix List"'), 'str2nr(matchstr(v:val, "\\d\\+"))') 
-    if bufwinnr(bufnum) != -1
-      cclose
-      return
-    endif
-  endfor
-  let winnr = winnr()
-  if exists("g:toggle_list_copen_command")
-    exec(g:toggle_list_copen_command)
-  else
-    copen
-  endif
-  if winnr() != winnr
-    wincmd p
-  endif
-endfunction
-
-if !exists("g:toggle_list_no_mappings")
-    nmap <script> <silent> <leader>l :call ToggleLocationList()<CR>
-    nmap <script> <silent> <leader>q :call ToggleQuickfixList()<CR>
-endif
-
-
-
+""" Suggested mappings (in the spirit of unimpaired)
+"nnoremap coL :ToggleLL<CR>
+"nnoremap coQ :ToggleQF<CR>

@@ -1,37 +1,38 @@
-# togglelist.vim
-
-A simple plugin for vim that allows you to bind a key to toggle the `Location List` and the `Quickfix List`. This plugin is currently in early development and there aren't many things besides a few options I imagine adding. Feel free to submit patches.
+# vim-togglelist
+vim-togglelist is a simple plugin that allows you to bind a key to toggle the `Location List` and the `Quickfix List`.
 
 ## Installation
+I recommend using a plugin manager to do the grunt work for you.  
+If for some reason, you do not want to use any of them, then unzip the contents of the .zip file to your ~/.vim directory.
 
-### Basic Brute-Force Install
+## Mappings/Commands
+The following commands are available by default
 
-Copy `togglelist.vim` to your `~/.vim/plugin` directory.
+````
+  :ToggleLL : Toggle the Location List
+  :ToggleQF : Toggle the Quickfix List
+````
 
-### Pathogen
-
-Checkout the github repository to the [Pathogen](https://github.com/tpope/vim-pathogen) directory.
-
-    cd ~/.vim/bundle
-    git clone https://github.com/milkypostman/vim-togglelist.git
-
-
-## Mappings
-
-The default mappings are:
-
-    nmap <script> <silent> <leader>l :call ToggleLocationList()<CR>
-    nmap <script> <silent> <leader>q :call ToggleQuickfixList()<CR>
-
-You can prevent these mappings by setting `g:toggle_list_no_mappings` in your `.vimrc` and then remap them if you want--both `ToggleLocationList` and `ToggleQuickfixList` are global functions. I imagine the names of the functions are self-explanatory.
-
-After opening or closing either list, the previous window is restored so you can still use `<C-w>p`.
+There are no maps provided by default; you need to set them up yourselves.  
 
 ## Customization
-
-You can specify which command you want to use to open a quickfix list(in case you are using some plugin) like:
+You can specify which command you want to use to open a quickfix list(in case you are using some plugin) by copying the
+`g:ToggleList` dictionary to your vimrc and editing it as required
 
 ``` vim
-let g:toggle_list_copen_command="Copen"
+let g:ToggleList = {
+  \ 'command': {
+  \   'copen'  : "copen",
+  \   'cclose' : "cclose",
+  \   'lopen'  : "lopen",
+  \   'lclose' : "lclose"
+  \ },
+  \ 'quiet': 1,
+  \}
 ```
 
+Change `g:ToggleList.quiet` to 0 if you want to see errors such as when trying to open an empty Location List
+
+``` vim
+let g:ToggleList.quiet = 0
+```
