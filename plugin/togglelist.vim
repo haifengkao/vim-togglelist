@@ -21,6 +21,7 @@ if !exists('g:ToggleList.cmd.copen' ) | let g:ToggleList.cmd.copen  = "copen"  |
 if !exists('g:ToggleList.cmd.cclose') | let g:ToggleList.cmd.cclose = "cclose" | endif
 if !exists('g:ToggleList.cmd.lopen' ) | let g:ToggleList.cmd.lopen  = "lopen"  | endif
 if !exists('g:ToggleList.cmd.lclose') | let g:ToggleList.cmd.lclose = "lclose" | endif
+if !exists('g:ToggleList.cmd.close')  | let g:ToggleList.cmd.close = "q" | endif
 
 command! ToggleQF call togglelist#ToggleQuickfix()
 command! ToggleLL call togglelist#ToggleLocationList()

@@ -39,6 +39,9 @@ function! togglelist#IsQuickfixBuffer(...) " -----------------------------------
 endfunction
 
 function! togglelist#ToggleQuickfix()
+  if togglelist#CloseBuffer()
+    return
+  endif
   if empty(togglelist#GetBufnrsList("Quickfix"))
     execute g:ToggleList.cmd.copen
   else
@@ -46,15 +49,39 @@ function! togglelist#ToggleQuickfix()
   endif
 endfunction
 
+function! togglelist#CloseBuffer() " ------------------------------------------------------------------------{{{1
+  echom &bt
+  " If current buffer has &bt=quickfix, `lclose` and return
+  " Note: If current buffer is a Quickfix and not Location List, then `lclose` has no effect
+  if &bt ==? "quickfix"
+    execute g:ToggleList.cmd.cclose
+    execute g:ToggleList.cmd.lclose
+    return 1
+  endif
+
+  if &bt ==? "nofile"
+    execute g:ToggleList.cmd.close
+    return 1
+  endif
+
+  if &bt ==? "nowrite"
+    execute g:ToggleList.cmd.close
+    return 1
+  endif
+
+  if &bt ==? "help"
+    execute g:ToggleList.cmd.close
+    return 1
+  endif
+  return 0
+endfunction
 
 function! togglelist#ToggleLocationList() " ------------------------------------------------------------------------{{{1
 ""
 " Description: If a Location List is associated with current buffer, close it. Else, open one
 "
-  " If current buffer has &bt=quickfix, `lclose` and return
-  " Note: If current buffer is a Quickfix and not Location List, then `lclose` has no effect
-  if &bt ==? "quickfix"
-    execute g:ToggleList.cmd.lclose
+
+  if togglelist#CloseBuffer()
     return
   endif
 
