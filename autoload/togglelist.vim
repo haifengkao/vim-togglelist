@@ -50,7 +50,6 @@ function! togglelist#ToggleQuickfix()
 endfunction
 
 function! togglelist#CloseBuffer() " ------------------------------------------------------------------------{{{1
-  echom &bt
   " If current buffer has &bt=quickfix, `lclose` and return
   " Note: If current buffer is a Quickfix and not Location List, then `lclose` has no effect
   if &bt ==? "quickfix"
